@@ -58,7 +58,7 @@ function uc_cc_settings_form() {
     '#title' => t('API key'),
     '#default_value' => variable_get('uc_cc_server_apikey', ''),
     '#description' => t('Your !link1 API key. !link2',
-      array('!link1'=> '<a href="http://checkoutcrypto.com">'.t('checkoutcrypto.com').'</a>','!link2'=> '<a href="http://checkoutcrypto.com/docs/beginner">'.t('What\'s this?').'</a>')),
+      array('!link1'=> '<a href="https://checkoutcrypto.com">'.t('CheckoutCrypto').'</a>','!link2'=> '<a href="https://checkoutcrypto.com/help/faq">'.t('What\'s this?').'</a>')),
     '#required' => TRUE,
   );
 
@@ -67,7 +67,25 @@ function uc_cc_settings_form() {
     '#value' => t('Refresh Coins'),
 	'#ajax' => array(
             'callback' => 'cc_refresh_callback',),
+);
+
+  $form['client'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Client settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+);
+
+    $form['client']['uc_cc_timeout'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Order timeout'),
+    '#default_value' => variable_get('uc_cc_timeout', '900'),
+    '#description' => t('The time an order must be completed within in seconds. Default 15 minutes (900).'),
+    '#required' => TRUE,
   );
+
+
+
 
   $form['#validate'][] = 'uc_cc_settings_form_validate';
 
@@ -88,18 +106,14 @@ function uc_cc_settings_form_validate($form, &$form_state) {
 
   $c = $form_state['values']['uc_cc_server_apikey'];
   if ($c == NULL) {
-    form_set_error('uc_cc_server', t('API key is a required field!'));
-  }else{
- 	ccApiRefreshCoins();
-	}
-
+      form_set_error('uc_cc_server', t('API key is a required field!'));
+  }
 
   if (!count(form_get_errors())) {
-    // TODO
-
-  /*if (TRUE !== ($fault = $cc_client->can_connect())) {
-      form_set_error('', t("Unable to communicate with the selected checkoutcrypto.com server."));
-    }*/
+      $success = ccApiRefreshCoins();
+      if($success !== TRUE) {
+          form_set_error('', t("Unable to communicate with the selected checkoutcrypto.com server."));
+      }
   }
 
 }
@@ -197,16 +211,16 @@ function uc_cc_form($form, $form_state) {
      }
 
     global $base_path;
+ global $base_url;
     $modp = drupal_get_path('module','uc_cc');
     $cc_class_sel = 'uc_cc_show';
     $cc_class_pay = 'uc_cc_hide';        
 
-   // Initiate form and add wrappers
-   $form = array();
-   $form['wrapper_header'] = array('#markup' => t('<div id="cc-wrapper"><div id="cc-border">'));
-   $form['wrapper_content'] = array('#markup' => t('<div id="cc_pay"></div>'));
-   $form['uc_cc_payment_information'] = array(
-     '#markup' => t('<p>Please select your preferred cryptocurrency to continue with payment</p>')
+    // Initiate form and add wrappers
+    $form = array();
+    $form['wrapper_header'] = array('#markup' => t('<div id="cc-wrapper"><div id="cc_pay"></div><div id="cc-border">'));
+    $form['uc_cc_payment_information'] = array(
+      '#markup' => t('<div id="cc_payment_information"><p>Please select your preferred cryptocurrency to continue with payment</p></div>')
     );
 
    $form['uc_cc_coin_select_wrapper'] = array('#markup' => t('<div id="cc_coin_select_wrapper" class="'.$cc_class_sel.'">'));
@@ -214,8 +228,10 @@ function uc_cc_form($form, $form_state) {
    foreach($coins as $coin){
        $coin_code = strtolower($coin['coin_code']);
 	   $coin_image = $coin['coin_image'];
-  	   $form['uc_cc_coin_select_'.$coin_code] = array('#markup' => t('<div id="cc_coin_'.$coin_code.'"></div>'));
-       $form['uc_cc_coin_select_'.$coin_code] = array('#markup' => t('<div id="cc_coin_'.$coin_code.'"></div>'));
+  	   $form['uc_cc_coin_select_'.$coin_code] = array('#markup' => t('<div class="cc_coin" id="cc_coin_'.$coin_code.'"></div>
+		<style type="text/css">
+		 #cc_coin_'.$coin_code.' { background:url("'.$base_url.'/sites/default/files'. $coin_image.'") left no-repeat; }
+		</style>'));
    }
    //Close coin select wrapper and open payment_processing_wrapper
    $form['uc_cc_coin_select_wrapper_end'] = array('#markup' => t('</div>'));
@@ -229,6 +245,7 @@ function uc_cc_form($form, $form_state) {
 
 $order_failed = FALSE;
 if(!($order_failed)) {
+
     $form['uc_cc_payment_address'] = array(
         '#type' => 'textfield',
         '#value' => t(''),
@@ -248,8 +265,10 @@ if(!($order_failed)) {
             'callback' => 'uc_cc_form_submit',),
     );
 
+    $form['actions']['reselect'] = array('#markup' => '<div id="cc_reselect_coin" class="uc_cc_show"><a id="cc_coin_reselect" class="btn btn-primary" style="cursor: pointer">Change currency</a></div>');   
+
     $form['uc_cc_progress_status'] = array(
-      '#markup' => '<div id="cc_progress_status">This window will auto-refresh status until order is complete</div>',
+      '#markup' => '</div><div id="cc-payment-status"><div id="cc_progress_status">This window will auto-refresh status until order is complete</div><div id="cc_progress_timer"></div>',
     );
 } else {
     $form['uc_cc_payment_information'] = array(
@@ -279,7 +298,7 @@ function uc_cc_form_submit(&$form, &$form_state) {
         $coin_selected = $form_state['input']['uc_cc_selected_coin'];
           if($coin_selected != NULL) {
               $coin_name_input_short = strtoupper(substr($coin_selected, 8, strlen($coin_selected)));
-              if($order->cc_coinname_short == NULL OR $order->cc_coinname_short != $coin_name_input_short) {
+              if(!isset($order->cc_coinname_short) OR $order->cc_coinname_short != $coin_name_input_short) {
                   $coins = getAvailableCoins();
                   foreach($coins as $coin){
                       $coin_code = strtoupper($coin['coin_code']);
@@ -292,6 +311,7 @@ function uc_cc_form_submit(&$form, &$form_state) {
               }
           }
     }
+
     $result = cc_order_status($order);
     //If order not found, create a new one
     if ($result === FALSE) {
@@ -300,16 +320,31 @@ function uc_cc_form_submit(&$form, &$form_state) {
       $coin_name = $order_info['coin_name'];
       $coin_name_full = $order_info['coin_name_full'];
       $queue_id = $order_info['queue_id'];
-      $pay_status = $order_inf['pay_status'];
+      $pay_status = $order_info['pay_status'];
+      $time_left = TRUE;
     } else {
+        $time_limit = variable_get('uc_cc_timeout', '900');
+        $time = (int)time();
+        $db_time = (int)strtotime($result['timestamp']);
+        $time_left = TRUE;
+        $time_diff = ($time - $db_time);
+
+        if($time_limit <= $time_diff) {
+            //order time limit reached
+            $time_limit_message = 'Time limit reached';
+            $time_left = FALSE;
+
+            //cancel order TODO
+        }
+
         //Check if customer has switched coin
-        if(($order->cc_coinname_short != NULL) AND ($result['cc_coinname_short'] != $order->cc_coinname_short)) {
+        if((isset($order->cc_coinname_short)) AND ($order->cc_coinname_short != NULL) AND ($result['cc_coinname_short'] != $order->cc_coinname_short)) {
           $order_info = uc_payment_method_cc('order-submit', $order);
           $coin_amount = $order_info['coin_amount'];
           $coin_name = $order_info['coin_name'];
           $coin_name_full = $order_info['coin_name_full'];
           $queue_id = $order_info['queue_id'];
-          $pay_status = $order_inf['pay_status'];
+          $pay_status = $order_info['pay_status'];
           $change_coin = TRUE;
         } else { //same
           $coin_amount = $result['cc_coin_amount'];
@@ -317,45 +352,74 @@ function uc_cc_form_submit(&$form, &$form_state) {
           $coin_name_full = $result['cc_coinname_full'];
           $queue_id = $result['cc_queue_id'];
           $pay_status = $result['cc_pay_status'];
+          $change_coin = FALSE;
+          $order->cc_coinname_full = $coin_name_full;
+          $order->cc_coinname_short = $coin_name;
         }
    }
    //Check if payment has been received
    if(strtolower($pay_status) == 'payment_entered') {
         $form_state['values']['op'] = t('complete');
         $_SESSION['uc_checkout'][$_SESSION['cart_order']]['do_complete'] = TRUE;      
-
-         //close modal and redirect to checkout page
+        
+        //close modal and redirect to checkout page
         $commands[] = ctools_modal_command_dismiss();
         $commands[] = ctools_ajax_command_redirect('cart/checkout/complete');
         drupal_set_message('Your purchase is now complete. A receipt will be emailed to you');
    } else {
-           //Add basic info and wrappers
-           $form['uc_cc_coin_select_wrapper'] = array('#markup' => t('<div id="cc_coin_select_wrapper" class="uc_cc_hide">'));
-           $form['uc_cc_payment_processing_wrapper'] = array('#markup' => t('<div id="cc_payment_processing_wrapper" class="uc_cc_show">'));
-           $form['uc_cc_payment_information'] = array('#markup' => '<p>Selected currency:<strong> '.$coin_name_full.'</strong> <a id="cc_coin_reselect" style="cursor: pointer">Change</a><br>Please send <strong>'.$coin_name.' '.$coin_amount.'</strong> to the following address.</p>');
-       if(isset($result['cc_address']) AND !($change_coin)) {
-           $form['uc_cc_payment_address'] = array(
-                '#type' => 'textfield',
-                '#value' => t($result['cc_address']),
-                '#attributes' => array('readonly' => 'readonly','size' => 50),
-                '#prefix' => '<div id="uc_cc_payment_address_container">',
-                '#suffix' => '</div>',
-            );
+       //Add basic info and wrappers
 
-           $url_qr_base = 'https://chart.googleapis.com/chart?cht=qr';
-           $url_qr_args = '&chs=150';
-           $url_qr_args .= '&choe=UTF8';
-           $url_qr_args .= '&chld=L';
-           $url_qr_args .= '&chl='.$result['cc_address'];
-           $url_qr = $url_qr_base.$url_qr_args;
-           $url_qr_output = '<img src="'.$url_qr.'">';
+       if($time_left) {
+           $form['uc_cc_payment_information'] = array('#markup' => '<div id="cc_payment_information"><p>Selected currency: <strong>'.$coin_name_full.'</strong><br>Please send <strong>'.$coin_name.' '.$coin_amount.'</strong> to the following address.</p></div>');
+           $commands[] = ajax_command_replace('#cc_payment_information', drupal_render($form['uc_cc_payment_information']));
 
-           $form['uc_cc_payment_qr_address'] = array(
-               '#markup' => '<div id="uc_cc_payment_qr_address_container">'.$url_qr_output.'</div>'
-           );
+
+           if(isset($result['cc_address']) AND !($change_coin)) {
+               $form['uc_cc_payment_address'] = array(
+                    '#type' => 'textfield',
+                    '#value' => t($result['cc_address']),
+                    '#attributes' => array('readonly' => 'readonly','size' => 50),
+                    '#prefix' => '<div id="uc_cc_payment_address_container">',
+                    '#suffix' => '</div>',
+                );
+               $commands[] = ajax_command_replace('#uc_cc_payment_address_container', drupal_render($form['uc_cc_payment_address']));
+
+
+               $url_qr_base = 'https://chart.googleapis.com/chart?cht=qr';
+               $url_qr_args = '&chs=150';
+               $url_qr_args .= '&choe=UTF8';
+               $url_qr_args .= '&chld=L';
+               $url_qr_args .= '&chl='.$result['cc_address'];
+               $url_qr = $url_qr_base.$url_qr_args;
+               $url_qr_output = '<img src="'.$url_qr.'">';
+
+               $form['uc_cc_payment_qr_address'] = array(
+                   '#markup' => '<div id="uc_cc_payment_qr_address_container">'.$url_qr_output.'</div>'
+               );
+               $commands[] = ajax_command_replace('#uc_cc_payment_qr_address_container', drupal_render($form['uc_cc_payment_qr_address']));               
+           } else {
+
+               $form['uc_cc_payment_qr_address'] = array(
+                   '#markup' => '<div id="uc_cc_payment_qr_address_container"></div>'
+               );
+               $commands[] = ajax_command_replace('#uc_cc_payment_qr_address_container', drupal_render($form['uc_cc_payment_qr_address']));
+
+               $form['uc_cc_payment_address'] = array(
+                    '#type' => 'textfield',
+                    '#value' => t($result['cc_address']),
+                    '#attributes' => array('readonly' => 'readonly','size' => 50),
+                    '#prefix' => '<div id="uc_cc_payment_address_container" class="uc_cc_hide">',
+                    '#suffix' => '</div>',
+                );
+               $commands[] = ajax_command_replace('#uc_cc_payment_address_container', drupal_render($form['uc_cc_payment_address']));
+           }
+           $form['wrapper_end'] = array('#markup' => t('</div></div></div>'));
+
+       } else {
+           $form['uc_cc_payment_information'] = array('#markup' => '<div id="cc_payment_information">'.$time_limit_message.'</div>');
        }
    }
-   $commands[] = ajax_command_replace('#cc-wrapper', drupal_render($form));
+
     print ajax_render($commands);
     drupal_exit();
 }
@@ -373,9 +437,17 @@ if(isset($_SESSION['cart_order'])) {
   if ($ajax) {
     ctools_include('ajax');
     ctools_include('modal');
+    ctools_add_js('ajax-responder');
     drupal_add_js('sites/all/modules/uc_cc/uc_cc.js', 'file');
     drupal_add_css('sites/all/modules/uc_cc/uc_cc.css', 'file');
     drupal_add_css('sites/all/modules/uc_cc/modal.css', 'file');
+
+    //drupal_add_css('//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css', 'external');
+    $time_limit = variable_get('uc_cc_timeout', '900');
+    $uc_cc_settings = array(
+        'time_limit' => $time_limit
+    );
+    drupal_add_js(array('uc_cc' => $uc_cc_settings), 'setting');
 
     $status = cc_order_status($order);
     if($status != FALSE || $status != NULL) {
@@ -429,8 +501,8 @@ function uc_cc_preprocess(&$variables, $hook) {
       'closeText' => t('Close'),
       'modalSize' => array(
         'type' => 'fixed',
-        'height' => 500,
-        'width' => 500,
+        'height' => 520,
+        'width' => 600,
       ),
       'modalOptions' => array(
         'opacity' => .6,
@@ -500,9 +572,6 @@ return $AllCoin;
 
 }
 
-function checkLastRefresh(){
-
-}
 
 function addCoin($coin_name, $coin_code, $coin_rate){
           try {
@@ -511,7 +580,7 @@ function addCoin($coin_name, $coin_code, $coin_rate){
 				->insertFields(array(
                 'coin_code' => $coin_code,
 				'coin_name' => $coin_name,
-				'coin_image' => '/images/'.strtolower($coin_name).'.png',
+				'coin_image' => '/checkoutcrypto/'.strtolower($coin_name).'.png',
       			'coin_confirm' => '1',
                 'rate' => $coin_rate,
 				'timestamp' => '',
@@ -539,7 +608,6 @@ function addCoin($coin_name, $coin_code, $coin_rate){
  ******************************************************************************/
 
 function ccApiRefreshCoins(){
-    checkLastRefresh();
     module_load_include('inc', 'uc_cc', 'includes/cc-php/cc');
     $apikey = variable_get('uc_cc_server_apikey', '');
 	$count = 0;
@@ -554,7 +622,9 @@ function ccApiRefreshCoins(){
 			$coin_name = $coin['coin_name'];
 			$coin_code = $coin['coin_code'];
 			$coin_rate = $coin['rate'];
+			$coin_image = $coin['coin_image'];
 			$result = addCoin($coin_name, $coin_code, $coin_rate);
+			cacheImage($coin_image);
 			$count++;
 		}
         return $result;
@@ -563,6 +633,14 @@ function ccApiRefreshCoins(){
        return $result;
    }
 
+}
+
+function cacheImage($coinUrl){
+$directory = 'public://checkoutcrypto'; 
+  if (!file_prepare_directory($directory, FILE_CREATE_DIRECTORY)) {
+    $directory = NULL;
+  }
+  $file = system_retrieve_file($coinUrl, $directory, TRUE);
 }
 
 function ccApiNewOrder($request) {
@@ -793,6 +871,7 @@ function uc_payment_method_cc($op, &$order, $form = NULL, &$form_state = NULL) {
     drupal_add_css('sites/all/modules/uc_cc/uc_cc.css', 'file');
 
     global $base_path;
+    global $base_url;
     $coins = getAvailableCoins();
     $modp = drupal_get_path('module','uc_cc');
 
@@ -804,8 +883,9 @@ function uc_payment_method_cc($op, &$order, $form = NULL, &$form_state = NULL) {
     foreach($coins as $coin){
         $coin_code = strtolower($coin['coin_code']);
         $coin_image = $coin['coin_image'];
+		$dir = $base_url."/sites/default/files".$coin_image;
         $payment_form['cc-notice-coins'.$coin_code] = array(
-            '#markup' => t('<div id="cc_coin_preview_'.$coin_code.'" class="cc_coin_coins_preview"><img src="'.$base_path.$modp.$coin_image.'" width="50" height="50" /></div>')
+            '#markup' => t('<div id="cc_coin_preview_'.$coin_code.'" class="cc_coin_coins_preview"><img src="'.$dir.'" width="50" height="50" /></div>')
         );
     }
     $payment_form['cc-notice-coins-wrapper-end'] = array('#markup' => '</div>');
@@ -835,10 +915,11 @@ function uc_payment_method_cc($op, &$order, $form = NULL, &$form_state = NULL) {
         ->execute()
         ->fetchAssoc();
       } catch (exception $e) {
-        //todo
+          watchdog('uc_payment_method_cc', 'Could not select order info from database: !fault', $e->getMessage());
       }
       if($hasOrder) { //order exists but most likely order attributes needs to be updated
-          db_update('uc_payment_cc')
+          try {
+            db_update('uc_payment_cc')
              ->fields(array(
                 'cc_pay_status' => 'registered',
                 'cc_address' => NULL, //make sure we don't use an address for another coin
@@ -849,6 +930,9 @@ function uc_payment_method_cc($op, &$order, $form = NULL, &$form_state = NULL) {
              ))
              ->condition('order_id', $order->order_id, '=')
              ->execute();
+          } catch (exception $e) {
+            watchdog('uc_payment_method_cc', 'Could not update order info in database: !fault', $e->getMessage());
+          }
       } else { //new order
           try {
               db_insert('uc_payment_cc')->fields(array(
@@ -869,6 +953,18 @@ function uc_payment_method_cc($op, &$order, $form = NULL, &$form_state = NULL) {
 
       $return = array('success' => TRUE, 'coin_amount' => $coin_amount, 'queue_id' => $queue_id, 'coin_name' => $coin_name, 'coin_name_full' => $coin_name_full, 'pay_status' => 'registered');
       return $return;
+    case 'order-cancel':
+        try {
+          db_update('uc_payment_cc')
+             ->fields(array(
+                'cc_pay_status' => 'cancelled',
+             ))
+             ->condition('order_id', $order->order_id, '=')
+             ->execute();
+        } catch (exception $e) {
+            watchdog('uc_payment_method_cc', 'Could not update order info in database: !fault', $e->getMessage());
+        }
+        break;
   }
 }
 
