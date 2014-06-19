@@ -1,5 +1,7 @@
 <?php
-
+/*
+* Copyright 2013 CheckoutCrypto Apache License 2.0
+*/
 Class ratesDb {
 
     function connectDb() {
