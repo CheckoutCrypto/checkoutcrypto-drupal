@@ -28,6 +28,9 @@ Installation
 * Install Ubercart 3 <http://www.ubercart.org/docs/user/8075/installing_ubercart>.
 * Place the uc_cc module in <drupal>/sites/<yoursite>/modules/ to install for a single site, or <drupal>/sites/all/modules to install for all sites.
 
+
+
+
 Configuration
 -------------
 
@@ -45,6 +48,25 @@ Configuration
   * Click on Currency format"
   * Enter the "Default currency". For a list of supported formats see here: http://checkoutcrypto.com/docs/api
   * Save configuration
+
+Cron
+-------------
+
+* Login to your server's shell, 
+* copy getrate.php, ratesconfig.php, cryptorates.php to an appropriate folder for any user account, we'll call this $ABSOLUTEPATH, remember it or write it down.
+* edit ratesconfig for your mysql database info, specifically the IP, table, user settings for your CMS
+
+* edit getrate.php for any preferred coins you need to add/remove, if the row doesn't exist in table you'll have to create one in cc_coin.
+
+* run the following, replace user with the preferred cron user.
+
+ sudo su $USER -c "crontab -e"
+
+* add a new line at the bottom of the file:
+
+15,45 * * * * cd $ABSOLUTEPATH && php -f getrate.php 
+
+
 
 Authors
 -------
