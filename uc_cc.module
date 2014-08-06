@@ -110,6 +110,7 @@ function uc_cc_settings_form_validate($form, &$form_state) {
   }
 
   if (!count(form_get_errors())) {
+	variable_set('uc_cc_server_apikey', $c);
       $success = ccApiRefreshCoins();
       if($success !== TRUE) {
           form_set_error('', t("Unable to communicate with the selected checkoutcrypto.com server."));
@@ -502,7 +503,7 @@ function uc_cc_preprocess(&$variables, $hook) {
       'modalSize' => array(
         'type' => 'fixed',
         'height' => 520,
-        'width' => 600,
+        'width' => 640,
       ),
       'modalOptions' => array(
         'opacity' => .6,
