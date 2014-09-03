@@ -464,7 +464,10 @@ if(isset($_SESSION['cart_order'])) {
     );
 
     $output = ctools_modal_form_wrapper('uc_cc_form', $form_state);
-
+	if (!empty($form_state['executed'])) {
+      $output = array();
+      $output[] = ctools_modal_command_dismiss();
+    }
     print ajax_render($output);
     drupal_exit();
   }
