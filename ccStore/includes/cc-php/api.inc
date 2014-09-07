@@ -46,7 +46,7 @@ $directory = 'public://checkoutcrypto';
 function ccApiNewOrder($request) {
     module_load_include('inc', 'ccStore', 'includes/cc-php/cc');
     module_load_include('inc', 'ccStore', 'includes/cc-php/lib');
-	$apikey  = getUserKey();
+	 $apikey = variable_get('uc_cc_server_apikey', '');
     try {
         $ccApi = new CheckoutCryptoApi();
         $response = $ccApi->query(array('action' => 'getnewaddress','apikey' => $apikey, 'coin' => $request['coin_name'],'amount' => $request['coin_amount']));
@@ -67,7 +67,7 @@ function ccApiNewOrder($request) {
 function ccApiAddressBalance($request) {
     module_load_include('inc', 'ccStore', 'includes/cc-php/cc');
     module_load_include('inc', 'ccStore', 'includes/cc-php/lib');
-	$apikey  = getUserKey();
+	 $apikey = variable_get('uc_cc_server_apikey', '');
 
     try {
         $ccApi = new CheckoutCryptoApi();
@@ -89,7 +89,7 @@ function ccApiAddressBalance($request) {
 function ccApiExchangeRate($request) {
     module_load_include('inc', 'ccStore', 'includes/cc-php/cc');
     module_load_include('inc', 'ccStore', 'includes/cc-php/lib');
-	$apikey  = getUserKey();
+	 $apikey = variable_get('uc_cc_server_apikey', '');
 
     try {
         $ccApi = new CheckoutCryptoApi();
@@ -112,7 +112,7 @@ function ccApiExchangeRate($request) {
 function ccApiOrderStatus($queue_id, $coin) {
     module_load_include('inc', 'ccStore', 'includes/cc-php/cc');
     module_load_include('inc', 'ccStore', 'includes/cc-php/lib');
-	$apikey  = getUserKey();
+	 $apikey = variable_get('uc_cc_server_apikey', '');
     try {
         $ccApi = new CheckoutCryptoApi();
         $response = $ccApi->query(array('action' => 'getstatus','apikey' => $apikey, 'orderid' => $queue_id, 'coin' => $coin));
