@@ -21,7 +21,7 @@ function coinSelectWrapper($cc_class_sel){
 	   $coin_name = $coin['coin_name'];
   	   $form['ccStore_coin_select_'.$coin_code] = array('#markup' => t('<div class="cc_coin" id="cc_coin_'.$coin_code.'"></div>
 		<style type="text/css">
-		 #cc_coin_'.$coin_code.' { background:url("'.$base_url.'/sites/default/files/checkoutcrypto/'. $coin_name.'.png") left no-repeat; }
+		 #cc_coin_'.$coin_code.' { background:url("'.$base_url.'/sites/default/files'. $coin_image.'") left no-repeat; }
 		</style>'));
    }
 	//// hidden stored coin variable
