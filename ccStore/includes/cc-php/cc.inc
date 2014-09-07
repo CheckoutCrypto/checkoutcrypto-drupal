@@ -13,8 +13,7 @@ class CheckoutCryptoApi {
         $apikey = $params['apikey'];
     }
 
-   // $base_url = 'https://api.checkoutcrypto.com/';
-	 $base_url = 'http://127.0.0.1/html/ccdev/api/api.php';
+    $base_url = 'https://api.checkoutcrypto.com/';
     $arguments = '?apikey='.$apikey;
     switch ($action) {
       case 'getnewaddress':
