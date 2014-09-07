@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'/>
+		<title>Checkout Crypto altcoin payment</title>
+		<link rel="stylesheet" href="colorbox.css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="../jquery.colorbox.js"></script>
+		<script>
+			$(document).ready(function(){
+				//Examples of how to assign the Colorbox event to elements
+				$(".callbacks").colorbox({
+					onOpen:function(){
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: 'https://95.85.20.20/dev/drupal/dev/drupal-7.26/sites/all/modules/potcoin-cart-drupal/includes/cc-php/colorbox/example1/ajax.php',
+                                                data: {'orderid': 142}, //replace 142 with actual order id TODO
+                                                success: function(msg) {
+                                                    alert(msg);
+                                                },
+                                                error: function(request,error) {
+                                                    console.log(arguments);
+                                                    alert ( "Unhandled exception: " + error );
+                                                }
+                                            });
+                                        }
+				});
+			});
+		</script>
+	</head>
+	<body>
+		
+		<p><a class='callbacks' href="ajax.php" title="Checkout Crypto - altcoin payment">Test</a></p>
+		
+
+	</body>
+</html>
