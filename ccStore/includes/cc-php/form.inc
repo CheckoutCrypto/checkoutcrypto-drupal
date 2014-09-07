@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * Author: Grant Hutchinson - CheckoutCrypto - dreamcode@checkoutcrypto.com
+ * Copyright 2014 Apache 2.0 Licensed
+ **/
+
+
+/**
  * Form for checkout crypto payment
  */
 function ccStore_form($form, $form_state) {

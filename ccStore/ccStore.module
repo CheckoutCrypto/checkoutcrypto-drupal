@@ -3,10 +3,8 @@
 //error_reporting(~0); ini_set('display_errors', 1);
 
 /**
- * @file
- * cc payment method.
- *
- * @author checkoutcrypto - dev@checkoutcrypto.com
+ * Author: Grant Hutchinson - CheckoutCrypto - dreamcode@checkoutcrypto.com
+ * Copyright 2014 Apache 2.0 Licensed
  **/
 
 /**

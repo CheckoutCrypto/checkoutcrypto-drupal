@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Author: Grant Hutchinson - CheckoutCrypto - dreamcode@checkoutcrypto.com
+ * Copyright 2014 Apache 2.0 Licensed
+ **/
 
 function coinSelectWrapper($cc_class_sel){
     global $base_url;
