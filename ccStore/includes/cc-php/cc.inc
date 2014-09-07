@@ -72,14 +72,6 @@ class CheckoutCryptoApi {
         $url = $base_url . $arguments;
         $result = $this->urlRequest($url);
 		break;
-      case 'servicecharge':
-        $coin_name = $params['coin'];
-        $gid = $params['gid'];
-        $uid = $params['uid'];
-        $arguments .= '&action='.$action.'&coin='.$coin_name.'&uid='.$uid.'&gid='.$gid;
-        $url = $base_url . $arguments;
-        $result = $this->urlRequest($url);
-		break;
     }
     if(isset($result)) {
         $return = json_decode($result, true);
