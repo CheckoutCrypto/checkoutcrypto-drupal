@@ -94,8 +94,8 @@ class CheckoutCryptoApi {
 
       $opts = array(
           CURLOPT_URL             => $url,
-          CURLOPT_SSL_VERIFYPEER  => false, //set to true for production
-          CURLOPT_SSL_VERIFYHOST  => false,
+          CURLOPT_SSL_VERIFYPEER  => true, //set to true for production
+          CURLOPT_SSL_VERIFYHOST  => true,
           CURLOPT_RETURNTRANSFER  => true, 
           CURLOPT_POST            => false,
           CURLOPT_HEADER         => false,
