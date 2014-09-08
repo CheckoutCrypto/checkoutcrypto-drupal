@@ -59,6 +59,7 @@ echo "Checking if git is installed........."
 type git >/dev/null 2>&1 && echo "Git installed." || sudo apt-get install git
 
 if [ -d "$defaultDir" ]; then
+	cd $defaultDir
 	echo "Pulling changes(if any) from CheckoutCrypto's Drupal repo"
 	git pull
 else
