@@ -34,13 +34,19 @@ read siteDir
 sudo mkdir $siteDir
 cd $siteDir
 
-echo "you are about to install drupal in this present directory. Hit y to all the questions. If it fails to install that database, don't worry, you can configure it after. "
+echo "you are about to install drupal in this present directory. \n Hit y to all the questions. If it fails to install that database, don't worry, you can configure it after. "
 
-echo "press any key to continue"  
+echo "\n press any key to continue"  
 read choice
 
 sudo drush core-quick-drupal
 sudo cp ./quick-drupal-*/drupal/* . -R
+cd ./sites/default/
+sudo rm settings.php
+sudo cp default.settings.php ./settings.php
+
+echo "\n\n\n visit https://yoursite/install.php to setup the database configuration n\n\n"
+
 ;;
 
 # git clone repository
@@ -72,7 +78,7 @@ for i in ~/checkoutcrypto-drupal/ccStore_extend/ccStore_theme/*.tar.gz; do sudo 
 ;;
 
 
-6) EXIT=1 ;;
+6) Exit=1 ;;
 esac
 done
 
