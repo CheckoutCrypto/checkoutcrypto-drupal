@@ -46,9 +46,8 @@ sudo cp ./quick-drupal-*/drupal/* . -R
 # git clone repository
 3)
 echo "Checking if git is installed........."
-dpkg --status git | grep -q not-installed
 
-type git >/dev/null 2>&1 && echo "Drush installed." || sudo apt-get install git
+type git >/dev/null 2>&1 && echo "Git installed." || sudo apt-get install git
 
 echo "Downloading the CheckoutCrypto Drupal dependencies to your home folder"
 cd ~
@@ -68,6 +67,10 @@ for i in ~/checkoutcrypto-drupal/ccStore_extend/ccStore_modules/*.tar.gz; do sud
 for i in ~/checkoutcrypto-drupal/ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/themes; done
 
 ;;
+5) sudo tail -n ~/checkoutcrypto-drupal/README.md
+
+;;
+
 
 6) EXIT=1 ;;
 esac
