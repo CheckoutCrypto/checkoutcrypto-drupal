@@ -44,6 +44,8 @@ sudo cp ./quick-drupal-*/drupal/* . -R
 cd ./sites/default/
 sudo rm settings.php
 sudo cp default.settings.php ./settings.php
+sudo chmod 777 $siteDir/sites/default/files
+sudo chmod 777 $siteDir/sites/default/settings.php
 
 echo "\n\n\n visit https://yoursite/install.php to setup the database configuration n\n\n"
 
@@ -69,8 +71,8 @@ read newsiteChoice
 				read siteDir
 fi
 
-for i in ~/checkoutcrypto-drupal/ccStore_extend/ccStore_modules/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/modules; done
-for i in ~/checkoutcrypto-drupal/ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/themes; done
+for i in ./checkoutcrypto-drupal/ccStore_extend/ccStore_modules/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/modules; done
+for i in ./checkoutcrypto-drupal/ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/themes; done
 
 ;;
 5) sudo tail -n 200 ~/checkoutcrypto-drupal/README.md
