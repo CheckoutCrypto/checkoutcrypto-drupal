@@ -55,7 +55,7 @@ function ccStore_cart_form($order){
         $coin_code = strtolower($coin['coin_code']);
         $coin_image = $coin['coin_image'];
         $payment_form['cc-notice-coins'.$coin_code] = array(
-            '#markup' => t('<div id="cc_coin_preview_'.$coin_code.'" class="cc_coin_coins_preview"><img src="'.$base_url.'/sites/default/files'.$coin_image.'" width="50" height="50" /></div>')
+            '#markup' => t('<div id="cc_coin_preview_'.$coin_code.'" class="cc_coin_preview"><img src="'.$base_url.'/sites/default/files'.$coin_image.'" width="50" height="50" /></div>')
         );
     }
     $payment_form['cc-notice-coins-wrapper-end'] = array('#markup' => '</div>');
