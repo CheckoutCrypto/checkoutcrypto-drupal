@@ -2,17 +2,20 @@
 CheckoutCrypto Drupal Client Prerequisite Extension Modules
 ==========================================================
 
-Quickly extract the compressed modules to a folder, if you're using linux:
+Quickly extract the compressed modules to a folder, if you're using linux, you may wish to utilize the express installer provided.
 
-tar -zxvf ./ccStore_extend.tar.gz -C ~/
+sudo sh ./install.sh
+
+If you prefer to extract them manually:
 
 Extract each module, all at once, to ./sites/all/modules ./sites/all/themes/ ./sites/all/libraries 
 (edit with your correct site directory).
 
-for i in ~/ccStore_extend/ccStore_modules/*.tar.gz; do sudo tar xvzf $i  -C /var/www/YOURSITE/sites/all/modules; done
-for i in ~/ccStore_extend/ccStore_themes/*.tar.gz; do sudo tar xvzf $i  -C /var/www/YOURSITE/sites/all/themes; done
+for i in ./ccStore_extend/ccStore_modules/*.tar.gz; do sudo tar xvzf $i  -C /var/www/YOURSITE/sites/all/modules; done
 
-Enable each of the modules that we just extracted, from the drupal Admin->Modules Menu.
+for i in ./ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C /var/www/YOURSITE/sites/all/themes; done
+
+Enable each of the modules that you just extracted, from the drupal Admin->Modules Menu.
 
 Required, Enable:
 -----------------

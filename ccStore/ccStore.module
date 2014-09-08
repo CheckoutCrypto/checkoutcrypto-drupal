@@ -417,8 +417,8 @@ function ccStore_callback($ajax, $data) {
     ctools_include('ajax');
     ctools_include('modal');
     ctools_add_js('ajax-responder');
-    drupal_add_js('sites/all/modules/ccStore/ccStore.js', 'file');
-    drupal_add_css('sites/all/modules/ccStore/ccStore.css', 'file');
+    drupal_add_js('sites/all/modules/ccStore/theme/ccStore.js', 'file');
+    drupal_add_css('sites/all/modules/ccStore/theme/ccStore.css', 'file');
 	global $base_url;
 
 	$my_settings = array(
@@ -463,8 +463,8 @@ function uc_payment_method_cc($op, &$order, $form = NULL, &$form_state = NULL) {
 
   switch ($op) {
     case 'cart-review':
-        drupal_add_js('sites/all/modules/ccStore/ccStore.js', 'file');
-        drupal_add_css('sites/all/modules/ccStore/ccStore.css', 'file');
+        drupal_add_js('sites/all/modules/ccStore/theme/ccStore.js', 'file');
+        drupal_add_css('sites/all/modules/ccStore/theme/ccStore.css', 'file');
         break;
 
     // Add cc settings to the payment methods settings form.
