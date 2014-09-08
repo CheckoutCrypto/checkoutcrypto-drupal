@@ -59,7 +59,7 @@ input, textarea, select, .uneditable-input{
 }
 
 #cc_pay {
-  background:url(images/logo.jpg) center no-repeat;
+  background:url(../images/logo.jpg) center no-repeat;
   height: 70px;
 }
 
