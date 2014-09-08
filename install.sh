@@ -71,11 +71,11 @@ read newsiteChoice
 				read siteDir
 fi
 
-for i in ./checkoutcrypto-drupal/ccStore_extend/ccStore_modules/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/modules; done
-for i in ./checkoutcrypto-drupal/ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/themes; done
+for i in ./ccStore_extend/ccStore_modules/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/modules; done
+for i in ./ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/themes; done
 
 ;;
-5) sudo tail -n 200 ~/checkoutcrypto-drupal/README.md
+5) sudo tail -n 200 ./README.md
 
 ;;
 
