@@ -23,7 +23,7 @@ case $choice in
 #check if drush is installed - if not install
 1)
 
-type drush2 >/dev/null 2>&1 && echo "Drush installed." || sudo apt-get install drush
+type drush >/dev/null 2>&1 && echo "Drush installed." || sudo apt-get install drush
 
 ;;
 
@@ -48,9 +48,7 @@ sudo cp ./quick-drupal-*/drupal/* . -R
 echo "Checking if git is installed........."
 dpkg --status git | grep -q not-installed
 
-if [ $? -eq 0 ]; then
-    sudo apt-get install git
-fi
+type git >/dev/null 2>&1 && echo "Drush installed." || sudo apt-get install git
 
 echo "Downloading the CheckoutCrypto Drupal dependencies to your home folder"
 cd ~
