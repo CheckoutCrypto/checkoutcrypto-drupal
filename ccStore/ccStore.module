@@ -532,6 +532,7 @@ function uc_payment_method_cc($op, &$order, $form = NULL, &$form_state = NULL) {
  * Implementation of hook_payment_method().
  */
 function ccStore_uc_payment_method() {
+global $base_url;
   $title = theme('image', array(
     'path' => drupal_get_path('module', 'uc_cc') . '/images/logo.jpg',
     'attributes' => array('class' => array('uc-cc')),

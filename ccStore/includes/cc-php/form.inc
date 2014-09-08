@@ -38,7 +38,7 @@ function ccStore_form($form, $form_state) {
 
 
 function ccStore_cart_form($order){
-    drupal_add_css('sites/all/modules/checkoutcrypto/CheckoutCrypto/ccStore/ccStore.css', 'file');
+    drupal_add_css('sites/all/modules/ccStore/ccStore.css', 'file');
 
     global $base_path;
     global $base_url;
