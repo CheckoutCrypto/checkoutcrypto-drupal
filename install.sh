@@ -67,7 +67,7 @@ for i in ~/checkoutcrypto-drupal/ccStore_extend/ccStore_modules/*.tar.gz; do sud
 for i in ~/checkoutcrypto-drupal/ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/themes; done
 
 ;;
-5) sudo tail -n ~/checkoutcrypto-drupal/README.md
+5) sudo tail -n 200 ~/checkoutcrypto-drupal/README.md
 
 ;;
 
