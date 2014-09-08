@@ -1,6 +1,7 @@
 #!/bin/bash
 clear
-
+parentDir=~
+defaultDir=$parentDir/checkoutcrypto-drupal
 siteDir="/var/www/site"
 
 # CheckoutCrypto Menu
@@ -9,12 +10,12 @@ until [ $Exit -eq 1 ]; do
 
 echo "CheckoutCrypto Menu"
 echo " Choices:"
-echo "         1)  Install Drush"
-echo "         2)  Install Drupal quick"
-echo "         3)  Download Dependency Modules"
-echo "		   4) Install Dependency Modules"
-echo "         5)  Read Configure Guide"
-echo " 			6) Exit"
+echo "1)  Install Drush"
+echo "2)  Install Drupal quick"
+echo "3) Download/Update Dependency Modules"
+echo "4) Install Dependency Modules"
+echo "5)  Read Configure Guide"
+echo "6) Exit"
 read choice
 
 
@@ -57,9 +58,16 @@ echo "Checking if git is installed........."
 
 type git >/dev/null 2>&1 && echo "Git installed." || sudo apt-get install git
 
-echo "Downloading the CheckoutCrypto Drupal dependencies to your home folder"
-cd ~
-git clone https://github.com/CheckoutCrypto/checkoutcrypto-drupal
+if [ -d "$defaultDir" ]; then
+	echo "Pulling changes(if any) from CheckoutCrypto's Drupal repo"
+	git pull
+else
+	echo "Downloading the CheckoutCrypto Drupal dependencies to your home folder"
+	cd $parentDir
+	git clone https://github.com/CheckoutCrypto/checkoutcrypto-drupal
+fi
+
+
 ;;
 
 4)
@@ -71,8 +79,8 @@ read newsiteChoice
 				read siteDir
 fi
 
-for i in ./ccStore_extend/ccStore_modules/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/modules; done
-for i in ./ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/themes; done
+for i in $defaultDir/ccStore_extend/ccStore_modules/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/modules; done
+for i in  $defaultDir/ccStore_extend/ccStore_theme/*.tar.gz; do sudo tar xvzf $i  -C  $siteDir/sites/all/themes; done
 
 ;;
 5) sudo tail -n 200 ./README.md
