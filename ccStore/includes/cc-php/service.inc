@@ -28,7 +28,7 @@ function coinSelectWrapper($cc_class_sel){
    foreach($coins as $coin){
 		$amount = 0;
         $coin_code = strtolower($coin['coin_code']);
-	    $amount = $order_amt / $coin['rate'];
+	    $amount = round($order_amt / $coin['rate'], 4, PHP_ROUND_HALF_UP);
 		$decPos = strpos($amount, '.');
 		$amtEnd = substr($amount, $decPos, 8);
 		$amtFrnt = substr($amount, 0, $decPos);
