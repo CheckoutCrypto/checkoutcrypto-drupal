@@ -8,13 +8,13 @@
 
 function ccApiRefreshCoins(){
     module_load_include('inc', 'ccStore', 'includes/cc-php/cc');
-    $apikey = variable_get('ccStore_server_apikey', '');
+	 $apikey = variable_get('ccStore_server_apikey', '');
 	$count = 0;
     try {
         $ccApi = new CheckoutCryptoApi();
         $response = $ccApi->query(array('action' => 'refreshcoins','apikey' => $apikey));
     } catch (exception $e) {
-        watchdog('ccStore_ccApiRefreshCoins', 'API query for new order failed: !fault', $e->getMessage());
+        watchdog('uc_cc_ccApiRefreshCoins', 'API query for new order failed: !fault', $e->getMessage());
     }
     if(isset($response['response']['coins'])) {
 		foreach($response['response']['coins'] as $coin){
@@ -49,7 +49,7 @@ function ccApiNewOrder($request) {
         $ccApi = new CheckoutCryptoApi();
         $response = $ccApi->query(array('action' => 'getnewaddress','apikey' => $apikey, 'coin' => $request['coin_name'],'amount' => $request['coin_amount']));
     } catch (exception $e) {
-        watchdog('ccStore_ccApiNewOrder', 'API query for new order failed: !fault', $e->getMessage());
+        watchdog('uc_cc_ccApiNewOrder', 'API query for new order failed: !fault', $e->getMessage());
     }
     if(isset($response['response']['queue_id'])) {
         $result['queue_id'] = $response['response']['queue_id'];
@@ -70,7 +70,7 @@ function ccApiAddressBalance($request) {
         $ccApi = new CheckoutCryptoApi();
         $response = $ccApi->query(array('action' => 'getreceivedbyaddress','apikey' => $apikey, 'coin' => $request['coin_name'], 'address' => $request['address'], 'amount' => $request['coin_amount'], 'confirms' => '1'));
     } catch (exception $e) {
-        watchdog('ccStore_ccApiAddressBalance', 'API query for balance failed: !fault', $e->getMessage());
+        watchdog('uc_cc_ccApiAddressBalance', 'API query for balance failed: !fault', $e->getMessage());
     }
 
     if(isset($response['response']['orderid'])) {
@@ -91,7 +91,7 @@ function ccApiExchangeRate($request) {
         $ccApi = new CheckoutCryptoApi();
         $response = $ccApi->query(array('action' => 'getrate','apikey' => $apikey, 'coin' => $request['coin_name']));
     } catch (exception $e) {
-        watchdog('ccStore_ccApiExchangeRate', 'API query for exchange rate failed: !fault', $e->getMessage());
+        watchdog('uc_cc_ccApiExchangeRate', 'API query for exchange rate failed: !fault', $e->getMessage());
     }
 
     if(isset($response['response']['rates'])) {
@@ -112,7 +112,7 @@ function ccApiOrderStatus($queue_id, $coin) {
         $ccApi = new CheckoutCryptoApi();
         $response = $ccApi->query(array('action' => 'getstatus','apikey' => $apikey, 'orderid' => $queue_id, 'coin' => $coin));
     } catch (exception $e) {
-        watchdog('ccStore_ccApiOrderStatus', 'API query for status failed: !fault', $e->getMessage());
+        watchdog('uc_cc_ccApiOrderStatus', 'API query for status failed: !fault', $e->getMessage());
     }
     if(isset($response['response']['status'])) {
         $result['status'] = $response['response']['status'];
