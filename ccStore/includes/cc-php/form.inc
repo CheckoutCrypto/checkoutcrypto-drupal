@@ -29,7 +29,7 @@ function ccStore_form($form, $form_state) {
 	//$form['ccStore_payment_processing_wrapper'] = array('#markup' => t('<div id="cc_payment_processing_wrapper"></div>'));
 
 	/// double check this pushes to the form array
-	array_push($form, coinSelectWrapper($cc_class_sel));
+	array_push($form, coinSelectWrapper($cc_class_sel, $order->order_total));
 	array_push($form, paymentWrapper($cc_class_pay));
   	$form['wrapper_end'] = array('#markup' => t('</div></div>'));
   	return $form; 

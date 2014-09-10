@@ -271,7 +271,7 @@ function ccStore_exchange_rate($order) {
   }
 
   try {
-     $result = db_select('ccdev_coins')
+     $result = db_select('cc_coins')
         ->fields('cc_coins', array(
           'coin_code',
           'rate'))
@@ -347,7 +347,7 @@ function ccStore_payment_amount_to_coin($order) {
 function getCoinRate($coin){
 global $user;
     $result = db_select('cc_coins')
-      ->fields('ccdev_coin', array(
+      ->fields('cc_coins', array(
         'rate'))
       ->condition('coin_code', $coin, '=')
       ->execute()

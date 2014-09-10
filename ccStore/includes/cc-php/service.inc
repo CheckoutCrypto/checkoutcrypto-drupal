@@ -4,7 +4,7 @@
  * Copyright 2014 Apache 2.0 Licensed
  **/
 
-function coinSelectWrapper($cc_class_sel){
+function coinSelectWrapper($cc_class_sel, $order_amt){
     global $base_url;
     module_load_include('inc', 'ccStore', 'includes/cc-php/lib');
 	 $coins = getAvailableCoins();
