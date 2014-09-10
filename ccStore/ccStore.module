@@ -19,16 +19,16 @@
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-  $form['server']['uc_cc_server'] = array(
+  $form['server']['ccStore_server'] = array(
     '#type' => 'radios',
     '#title' => t('Remote server'),
-    '#default_value' => variable_get('uc_cc_server', "api.checkoutcrypto.com"),
+    '#default_value' => variable_get('ccStore_server', "api.checkoutcrypto.com"),
     '#options' => array('api.checkoutcrypto.com' => 'api.checkoutcrypto.com'),
   );
-  $form['server']['uc_cc_server_apikey'] = array(
+  $form['server']['ccStore_server_apikey'] = array(
     '#type' => 'textfield',
     '#title' => t('API key'),
-    '#default_value' => variable_get('uc_cc_server_apikey', ''),
+    '#default_value' => variable_get('ccStore_server_apikey', ''),
     '#description' => t('Your !link1 API key. !link2',
       array('!link1'=> '<a href="https://checkoutcrypto.com">'.t('CheckoutCrypto').'</a>','!link2'=> '<a href="https://checkoutcrypto.com/help/faq">'.t('What\'s this?').'</a>')),
     '#required' => TRUE,
@@ -59,17 +59,17 @@ function cc_refresh_callback(){
  * @param unknown_type $form_state
  */
  function ccStore_settings_form_validate($form, &$form_state) {
-/*  $c = $form_state['values']['uc_cc_server'];
+  $c = $form_state['values']['ccStore_server'];
   if ($c != 'api.checkoutcrypto.com') {
-    form_set_error('uc_cc_server', t('Invalid remote server specified'));
+    form_set_error('ccStore_server', t('Invalid remote server specified'));
   }
 
-  $c = $form_state['values']['uc_cc_server_apikey'];
+  $c = $form_state['values']['ccStore_server_apikey'];
   if ($c == NULL) {
-      form_set_error('uc_cc_server', t('API key is a required field!'));
+      form_set_error('ccStore_server', t('API key is a required field!'));
   }
 
-  if (!count(form_get_errors())) {
+ /* if (!count(form_get_errors())) {
       $success = ccApiRefreshCoins();
       if($success !== TRUE) {
           form_set_error('', t("Unable to communicate with the selected checkoutcrypto.com server."));
@@ -123,7 +123,7 @@ function ccStore_perm () {
  * Implementation of hook_menu().
  */
 function ccStore_menu() {
-  $items['uc_cc/%ctools_js'] = array(
+  $items['ccStore/%ctools_js'] = array(
     'page callback' => 'ccStore_callback',
     'page arguments' => array(1),
     'access callback' => TRUE,
@@ -183,7 +183,7 @@ function ccStore_preprocess(&$variables, $hook) {
 /**
  * Implementation of hook_theme().
  */
-function uc_cc_theme($existing, $type, $theme, $path) {
+function ccStore_theme($existing, $type, $theme, $path) {
   return array(
     'uc_payment_method_' => array(
       'arguments' => array('form' => NULL),
@@ -207,7 +207,7 @@ function ccStore_entity_load($entities, $type) {
  * Implementation of hook_theme_registry_alter()
  */
 function ccStore_theme_registry_alter(&$registry) {
-  $registry['uc_order']['process functions'][]='uc_cc_postprocess_invoice_themer';
+  $registry['uc_order']['process functions'][]='ccStore_postprocess_invoice_themer';
 }
 
 /**
@@ -291,7 +291,7 @@ function ccStore_form_submit(&$form, &$form_state) {
       $pay_status = $order_info['pay_status'];
       $time_left = TRUE;
     } else {
-        $time_limit = variable_get('uc_cc_timeout', '900');
+        $time_limit = variable_get('ccStore_timeout', '900');
         $time = (int)time();
         $db_time = (int)strtotime($result['timestamp']);
         $time_left = TRUE;
@@ -424,7 +424,7 @@ function ccStore_callback($ajax, $data) {
 	$my_settings = array(
 	  'baseUrl' => $base_url,
 	 );
-    $time_limit = variable_get('uc_cc_timeout', '900');
+    $time_limit = variable_get('ccStore_timeout', '900');
     $ccStore_settings = array(
         'time_limit' => $time_limit
     );
