@@ -1,7 +1,0 @@
-name = Checkout Crypto
-description = Accept altcoin orders via CheckoutCrypto.com
-dependencies[] = uc_order
-dependencies[] = uc_payment
-files[] = includes/cc-php/cc.inc
-package = Ubercart - payment
-core = 7.x

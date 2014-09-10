@@ -24,6 +24,18 @@ function coinSelectWrapper($cc_class_sel){
 		 #cc_coin_'.$coin_code.' { background:url("'.$base_url.'/sites/default/files'. $coin_image.'") left no-repeat; }
 		</style>'));
    }
+
+   foreach($coins as $coin){
+		$amount = 0;
+        $coin_code = strtolower($coin['coin_code']);
+	    $amount = $order_amt / $coin['rate'];
+		$decPos = strpos($amount, '.');
+		$amtEnd = substr($amount, $decPos, 8);
+		$amtFrnt = substr($amount, 0, $decPos);
+		$amtFinal = $amtFrnt . $amtEnd;
+ 		$form['ccStore_coin_amt_'.$coin_code] = array('#markup' => t('<div id="cc_coin_'.$coin_code.'_amt" class="cc_coin_amt">'.$amtFinal.' '.strtoupper($coin_code).' </div>'));
+	}
+
 	//// hidden stored coin variable
    $form['ccStore_selected_coin'] = array(
        '#type' => 'hidden',

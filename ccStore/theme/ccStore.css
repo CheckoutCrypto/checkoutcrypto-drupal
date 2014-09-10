@@ -46,6 +46,12 @@ input, textarea, select, .uneditable-input{
   height: 150px;
 }
 
+.cc_coin_amt {
+  float: left;
+  width: 150px;
+  height: 20px;
+}
+
 #uc_cc_payment_qr_address_container {
   height: 155px;
   display: block;

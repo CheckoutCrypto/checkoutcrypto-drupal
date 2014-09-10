@@ -1,11 +1,9 @@
-ccStore 0.8.6 (uc_cc) Beta
-==========
-New Version 0.8.6, now temporarily named 'ccStore'.
-Install/extract: ccStore or uc_cc (not both)
-
-uc_cc 0.8.5 Stable
+ccStore 0.8.6 (uc_cc) Stable
 ==========
 A payment method for the Ubercart shopping cart for Drupal.
+
+New Version 0.8.6, renamed 'ccStore'.
+Install/extract: ccStore or the previously named package, uc_cc (not both)
 
 Features
 --------
