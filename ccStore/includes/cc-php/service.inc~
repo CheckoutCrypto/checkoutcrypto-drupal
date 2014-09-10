@@ -68,8 +68,6 @@ function paymentWrapper($cc_class_pay){
       '#value' => t('Submit'),
         '#ajax' => array(
             'callback' => 'ccStore_form_submit',),
-        '#prefix' => '<div class="uc_cc_hide" >',
-        '#suffix' => '</div>',
     );
     $form['ccStore_progress_status'] = array(
       '#markup' => '<div id="cc-payment-status" ><div id="cc_progress_status">This window will auto-refresh status until order is complete</div><div id="cc_progress_timer"></div>',
