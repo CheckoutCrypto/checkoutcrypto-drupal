@@ -73,11 +73,6 @@ jQuery(document).ready(function ($) {
       });
 
     if($(e.target).parent().is('#cc_coin_select_wrapper')) {
-		selCoin = e.target.id;
-		if(selCoin == "cc_coin_btc"){
-			iVal = iVal * 2;
-			timeleft = timeleft * 2;
-		}
 
         $('[name="ccStore_selected_coin"]').val(e.target.id);
        $("#cc_coin_select_wrapper").fadeTo("slow", 1.00, function(){ //fade and toggle class
@@ -92,6 +87,11 @@ jQuery(document).ready(function ($) {
 		$('#edit-submit--2').hide();
         checker = setInterval(submit_uc_cc_form, iVal);
         submit_uc_cc_form();
+		selCoin = e.target.id;
+		if(selCoin == "cc_coin_btc"){
+			iVal = iVal * 2;
+			timeleft = timeleft * 2;
+		}
     }
 
 	});  /// end body
