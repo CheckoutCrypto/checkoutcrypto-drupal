@@ -7,6 +7,7 @@
 
 
 function ccApiRefreshCoins(){
+    module_load_include('inc', 'ccStore', 'includes/cc-php/lib');
     module_load_include('inc', 'ccStore', 'includes/cc-php/cc');
 	 $apikey = variable_get('ccStore_server_apikey', '');
 	$count = 0;
